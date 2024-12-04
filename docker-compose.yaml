@@ -1,0 +1,34 @@
+version: '3'
+services:
+  api:
+    build: .
+    container_name: "employee-api"
+    ports:
+      - "8000:8000"
+    command: uvicorn app.run:app --host 0.0.0.0 --port 8000
+    environment:
+      - DB_HOST=host.docker.internal
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASSWORD="" #specify password 
+      - DB_DATABASE_NAME=python_learning
+      - ENV=dev
+
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres
+    container_name: "employee-api-postgres-db"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD="" #specify password 
+      - POSTGRES_DB=python_learning
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres-db:
+
