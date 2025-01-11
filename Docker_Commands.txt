@@ -1,0 +1,82 @@
+docker ps
+docker ps -a
+docker pull redis    [docker pull redis:latest (default), docker pull redis:4.0 (specified version)]
+docker run -d redis  [docker run -d redis:latest (default), docker run -d redis:4.0 (specified version)]
+docker stop 4f1ff9e0ba06
+docker start 4f1ff9e0ba06
+docker run -d -p8090:6379 redis   [docker run -d -p<LocalHost Port>:<Container Port> redis]
+------------------------------------------------
+Container Names:
+docker run -d --name redis-old redis
+docker run -d --name redis-new -p8090:6379 redis
+------------------------------------------------
+Environment Variables:
+docker run -d -8082:5432 -e POSTGRES_USER=postgresuser -e POSTGRES_PASSWORD=mypass123 --name mypostgresdb postgres
+------------------------------------------------
+Debugging Container:
+docker logs 90191e20902f
+docker exec -it 52816c17b48b bash   [docker exec -it 52816c17b48b /bin/sh]
+------------------------------------------------
+Docker Network:
+Docker Network is used to create a standalone network for multiple containers. This is useful when multiple
+containers require inter communication.
+
+docker network create my-network
+docker run -d -8082:5432 \
+ -e POSTGRES_USER=postgresuser \
+ -e POSTGRES_PASSWORD=mypass123 \
+ --name mypostgresdb \
+ --net my-network \
+ postgres
+------------------------------------------------
+Docker Compose:
+Docker Compose is a YAML file where containers are configured.
+It makes easier to configure and start the containers (services) faster. It automatically 
+creates a network for multiple containers (services) specified in the docker-compose.yaml  
+
+docker-compose -f docker-compose.yaml up -d
+docker-compose -f docker-compose.yaml down
+------------------------------------------------
+Dockerfile:
+Dockerfile is used to build a custom image. It basically packages the application with all requires dependencies 
+and configurations. It uses base image to build new custom image.
+
+docker build -t my-app:1.0.0 .
+
+------------------------------------------------
+Deleting the Container and Image
+
+docker rm <Container ID>
+docker rmi <Iamge ID> [Remove the associated container first and then remove the image]
+------------------------------------------------
+Push to Docker Hub:
+docker push my-app:1.0.0 [docker push docker.io/library/my-app:1.0.0]
+
+Push to Private Container Registry:
+Login into the private registry first. (One time activity just like git login)
+docker tag my-app:1.0.0 <Registry Domain>/my-app:1.0.0
+docker push <Registry Domain>/my-app:1.0.0
+
+Pull from Private Container Registry:
+Login into the private registry first. (One time activity just like git login)
+docker pull <Registry Domain>/my-app:1.0.0
+------------------------------------------------
+Docker Volume:
+The data is wiped off if container is restarted. Docker volumes are used to persist the data.
+Docker Volume uses a virtual file system in the container which is actually mounted on the host file system.
+
+1. Mounts the Container Virtual File System on the Host Machine File System
+docker run -v <Host File System Path>:<Container Virtual File System Path>
+
+2. Anonymous Volumes - Creates a new folder in host file system and mount the container path
+docker run -v <Container Virtual File System Path> []
+
+3. Named Volumes (Recommended way) - Named version of anonymous volume.
+docker run -v <name>:<Container Virtual File System Path>
+
+The docker volumes can be specified in the docker-compose.yaml file as well.
+
+The docker volumes are persisted on the host file system in the following paths:
+1. Windows: C:\ProgramData\docker\volumes
+2. Linux and Mac: /var/lib/docker/volumes
+------------------------------------------------
